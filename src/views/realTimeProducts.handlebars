@@ -1,0 +1,39 @@
+<h2>productos en tiempo real:</h2>
+<br>
+<div>
+    <form action="" method="post" id="productForm">
+        <h4>Añadir producto</h4>
+        <label for="post-name">nombre:</label>
+            <input id="post-name" type="text" name="name" required>
+            <br>
+        <label for="post-categ">category:</label>
+            <input id="post-categ" type="text" name="categ" required>
+            <br>
+        <label for="post-desc">descripcion:</label>
+            <input id="post-desc" type="text" name="desc" required>
+            <br>
+        <label for="post-price">precio:</label>
+            <input id="post-price" type="number" name="price" required>
+            <br>
+        <label for="post-stock">stock:</label>
+            <input id="post-stock" type="number" name="stock" required>
+        <button type="submit">Subir</button>
+    </form>
+    <br>
+    <form action="" method="post" id="deleteForm">
+        <h4>Eliminar producto por Id</h4>
+        <label for="post-id">Id (desde cero):</label>
+            <input type="number" name="id" id="post-id" required>
+        <button type="submit">Eliminar</button>
+    </form>
+</div>
+<br>
+
+<div id="productsWrapper"></div>
+    <div id="products">
+        
+    </div>
+</div>
+
+<script type="module" src="/socket.io/socket.io.js"></script>
+<script type="module" src="/js/index.js"></script>

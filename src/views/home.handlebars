@@ -1,0 +1,19 @@
+<h2>Home</h2>
+
+<h1>Productos</h1>
+
+<div id="productsWrapper">
+    <div id="products">
+        {{#each productsList}}
+            <div class="product" id="{{this.id}}">
+                <h3>{{this.name}}</h3>
+                <h6>categoria: {{this.categ}}</h6>
+                <p>{{this.desc}}</p>
+                <span>${{this.price}}.00  stock disponible: {{this.stock}}u</span>
+                <br>
+            </div>
+        {{/each}}
+    </div>
+</div>
+{{!-- <link rel="stylesheet" href="/css/main.css"> --}}
+<script type="module" src="/js/getProducts.js"></script>
