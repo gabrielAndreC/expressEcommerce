@@ -1,0 +1,50 @@
+<link rel="stylesheet" href="/css/{{style}}">
+
+<div class="wrapper">
+    <h2 class="loginH">Inicia Sesión para Continuar</h2>
+    <div class="loginWrapper">
+        <div class="loginContainer">
+            <form action="" method="post" id="loginForm" class="logForm">
+                <h4>Iniciá Sesión</h4>
+                <div class="formField">
+                <label for="post-email">Email</label>
+                    <input id="post-email" type="text" name="email" required>
+                </div>
+                <div class="formField">
+                <label for="post-password">Contraseña</label>
+                    <input id="post-password" type="text" name="password" required>
+                    <br>
+                </div>
+                <button type="submit">Iniciar</button>
+
+            </form>
+        </div>
+        <hr>
+        <div class="signupContainer">
+            <form action="" method="post" id="signForm" class="logForm">
+                <h4>Registrate</h4>
+                <div class="formField">
+                <label for="post-name">Nombre/s</label>
+                    <input id="post-name" type="text" name="name" required>
+                </div>
+                <div class="formField">
+                <label for="post-lastName">Apellido/s</label>
+                    <input id="post-lastName" type="text" name="lastName" required>
+                </div>
+                <div class="formField">
+                <label for="post-email">Email</label>
+                    <input id="post-email" type="text" name="email" required>
+                </div>
+                <div class="formField">
+                <label for="post-password">Contraseña</label>
+                    <input id="post-password" type="text" name="password" required>
+                </div>
+                <button type="submit">Resgistrarse</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="module" src="/socket.io/socket.io.js"></script>
+<script type="module" src="/js/login.js"></script>

@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="/css/{{style}}">
+<div class="wrapper">
+    <h1>Productos</h1>
+<div class="prodRows">
+    <label for="rows">Productos por pagina:</label>
+    <ul name="rows">
+        <li><a href="/products?page=1&row=2">2</a></li>
+        <li><a href="/products?page=1&row=5">5</a></li>
+        <li><a href="/products?page=1&row=10">10</a></li>
+    </ul>
+</div>
+<hr class="prodRowsHr">
+{{#if result.isValid}}
+    <div id="productsWrapper">
+        <div id="products">
+            {{#each result.docs}}
+                <div class="product" id="{{this.id}}">
+                    <h3>{{this.name}}</h3>
+                    <h6>categoria: {{this.categ}}</h6>
+                    <p>{{this.desc}}</p>
+                    <span>${{this.price}}.00  stock disponible: {{this.stock}}u</span>
+                    <a class="btn-page btn-product" href="http://localhost:8080/products/{{this._id}}">Añadir al carrito</a>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    <hr class="prodRowsHr">
+    <div class="productsNav">
+        {{#if result.hasPrevPage}}
+            <a class="btn-page" href={{result.prevLink}}>Anterior</a>
+        {{/if}}
+        &nbsp;
+            <span class="currentPage">{{result.page}}</span>
+        &nbsp;
+        {{#if result.hasNextPage}}
+            <a class="btn-page" href={{result.nextLink}}>Siguiente</a>
+        {{/if}}
+    </div>
+{{else}}
+    <h3>No hay mas productos.</h3>
+{{/if}}
+</div>

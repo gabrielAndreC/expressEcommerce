@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="/css/{{style}}">
+<div class="wrapper">
+    <h1>Carrito</h1>
+{{#if result}}
+    <div id="productsWrapper">
+        <div id="productsCart">
+            {{#each result}}
+                <div class="product">
+                    <h6>{{this.id}}</h6>
+                    <h3>{{this.name}}</h3>
+                    <h6>categoria: {{this.categ}}</h6>
+                    <p>{{this.desc}}</p>
+                    <span>${{this.price}}.00 X {{this.quantity}} = ${{this.totalPrice}}</span>
+                    <hr class="prodHr">
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    {{else}}
+    <h3>No hay productos aún.</h3>
+    {{/if}}
+</div>

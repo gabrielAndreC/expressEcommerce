@@ -1,0 +1,171 @@
+* {
+  font-family: "poppins";
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper {
+  padding: 0 8px;
+}
+
+nav {
+  background-color: #85b2df;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+nav a {
+  font-weight: 500;
+  text-decoration: none;
+  color: white;
+  padding: 0 4px;
+}
+nav a:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.infoProyecto h3 {
+  text-align: center;
+}
+
+.prodRows {
+  display: flex;
+}
+.prodRows ul {
+  display: flex;
+  padding: 0;
+  margin-left: 4px;
+}
+.prodRows ul li {
+  list-style-type: none;
+  margin: 0 4px;
+}
+.prodRows ul li a {
+  padding: 0 8px;
+  text-decoration: none;
+  border: 1px solid black;
+  display: block;
+  height: 20px;
+}
+
+.prodRowsHr {
+  margin: 4px 0;
+}
+
+#productsWrapper {
+  height: min-content;
+  display: flex;
+  align-content: center;
+}
+
+#products {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+}
+#products .product {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin-bottom: 16px;
+  height: 120px;
+}
+
+#productsCart {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+#productsCart .product {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+#productsCart .product .prodHr {
+  margin: 8px 0;
+}
+
+.productsNav {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+.productsNav .currentPage {
+  background-color: #5583b1;
+  padding: 0 12px;
+  text-align: center;
+  font-weight: 500;
+  color: white;
+  border: 1px solid black;
+}
+
+.productsFormsWrapper {
+  display: flex;
+}
+.productsFormsWrapper form {
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px;
+}
+.productsFormsWrapper form .formField {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.loginH {
+  text-align: center;
+}
+
+.loginWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginWrapper {
+  display: flex;
+}
+.loginWrapper hr {
+  height: 150px;
+}
+.loginWrapper form {
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px;
+}
+.loginWrapper form .formField {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.btn-page {
+  background-color: #85b2df;
+  padding: 0 12px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 500;
+  color: white;
+}
+.btn-page:hover {
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+}
+
+.btn-product {
+  width: 50%;
+}
+
+/*# sourceMappingURL=main.css.map */

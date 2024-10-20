@@ -3,13 +3,16 @@ const socket = io();
 //Recibir la lista de procutos por primera vez
 const productsContainer = document.getElementById("products") 
 
+socket.emit('pedirLista');
+
 socket.on('enviarProductList', data=>{
     productsContainer.innerHTML="";
     data.forEach((el) => {
         const div = document.createElement('div')
         div.className="product";
-        div.id=el.id;
-        
+        div.id=el._id;
+
+        div.appendChild(Object.assign(document.createElement('h6'),{ textContent:`id: ${el._id}`}))
         div.appendChild(Object.assign(document.createElement('h3'),{ textContent:el.name}))
         div.appendChild(Object.assign(document.createElement('h6'),{ textContent:`categoria: ${el.categ}`}))
         div.appendChild(Object.assign(document.createElement('p'),{ textContent:el.desc}))
@@ -27,7 +30,7 @@ productForm.addEventListener('submit', (ev)=>{
     ev.preventDefault();
 
     const formData = new FormData(ev.target)
-    const nuevoProducto = {id:0};
+    const nuevoProducto = {};
 
     formData.forEach((value, key)=>{
         nuevoProducto[key] = value; 

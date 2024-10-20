@@ -1,0 +1,24 @@
+.loginH{
+    text-align: center;
+}
+.loginWrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.loginWrapper{
+    display: flex;
+    hr{
+        height: 150px;
+    }
+    form{
+        display: flex;
+        flex-direction: column;
+        .formField{
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        padding: 0 8px;
+    }
+}

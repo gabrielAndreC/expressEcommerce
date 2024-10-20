@@ -1,19 +1,8 @@
-<h2>Home</h2>
-
-<h1>Productos</h1>
-
-<div id="productsWrapper">
-    <div id="products">
-        {{#each productsList}}
-            <div class="product" id="{{this.id}}">
-                <h3>{{this.name}}</h3>
-                <h6>categoria: {{this.categ}}</h6>
-                <p>{{this.desc}}</p>
-                <span>${{this.price}}.00  stock disponible: {{this.stock}}u</span>
-                <br>
-            </div>
-        {{/each}}
+<link rel="stylesheet" href="/css/{{style}}">
+<div class="wrapper">
+    <div class="infoProyecto">
+        <h2>Inicio</h2>
+        <h3>Entrega final, proyecto de BackEnd I</h3>
     </div>
 </div>
-{{!-- <link rel="stylesheet" href="/css/main.css"> --}}
-<script type="module" src="/js/getProducts.js"></script>
+

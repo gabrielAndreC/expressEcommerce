@@ -1,36 +1,41 @@
 import { Router } from "express";
 import __dirname from "../utils.js";
-import fs from 'fs'
+import cartModel from "../models/cart.model.js";
+import { ObjectId } from "mongodb";
+import productModel from "../models/product.model.js";
 
 const router = Router();
 
-let carts = [];
-if (fs.existsSync(__dirname+'/db/carts.json')){
-    carts = JSON.parse(fs.readFileSync(__dirname+'/db/carts.json','utf8'))
+let carts;
+
+const getCarts = async ()=>{
+    carts = await cartModel.find();
 }
 
-router.get('/',(req,res)=>{
+router.get('/', async(req,res)=>{
+    await getCarts()
     res.status(200).json(carts);
 })
 
-router.post('/',(req,res)=>{
-    const newCartId = (carts.length);
-    const cart = {
-        "id":newCartId,
-        "products":[]
+router.post('/',async (req,res)=>{
+    try {
+        let nuevoCart = await cartModel.create(req.body);
+        await getCarts();
+        res.status(200).json(carts)
+    } 
+    catch (error) {
+        console.error("error:",error)
+        res.status(400).send("no se ha podido crear el carrito")
     }
-    carts.push(cart)
-    if (fs.existsSync(__dirname+'/db/carts.json')){
-        fs.writeFileSync(__dirname+'/db/carts.json',JSON.stringify(carts))
-    }
-    res.status(200).json(carts)
+    
 })
 
-router.get('/:cid',(req,res)=>{
-    const cart = carts.find(el => el.id == req.params.cid)
+router.get('/:cid',async (req,res)=>{
+    let cart = await cartModel.findOne({_id: new ObjectId(req.params.cid)})
 
     if (cart){
-        res.status(201).json(cart)
+        let result = await cart.populate('products.product')
+        res.status(201).json(result)
     }
     
     else{
@@ -38,25 +43,34 @@ router.get('/:cid',(req,res)=>{
     }
 })
 
-router.post('/:cid/product/:pid',(req,res)=>{
-    const cart = carts.find(el => el.id == req.params.cid)
+router.post('/:cid/product/:pid',async (req,res)=>{
+    let cart = await cartModel.findOne({_id: new ObjectId(req.params.cid)})
     
     if (cart){
         const prodId = req.params.pid
-        const prodQ = parseInt(req.query.quantity)
 
-        if (cart.products.find(el => el.id === prodId)){
-            const productIndex = cart.products.findIndex(el => el.id === prodId);
-            cart.products[productIndex].quantity += prodQ;
+        let prodQ = 1;
+
+        if (req.query.q){
+            prodQ = parseInt(req.query.q)
+        }
+
+        let productExist = await cartModel.findOne({_id: new ObjectId(req.params.cid), "products.product":prodId})
+
+        if (productExist){
+            const updateCart = await cartModel.updateOne(
+                {_id: new ObjectId(req.params.cid), "products.product": prodId},
+                {$inc: { "products.$.quantity": prodQ} }
+            );
+            cart = await cartModel.findOne({ _id: new ObjectId(req.params.cid) });
+            res.status(200).json(cart)
         }
         else{
-            cart.products.push({"id":prodId,"quantity":prodQ})
+            cart.products.push({"product": new ObjectId(prodId),"quantity":prodQ})
+            await cart.save();
+            cart = await cartModel.findOne({ _id: new ObjectId(req.params.cid) });
+            res.status(200).json(cart)
         }
-        
-        if (fs.existsSync(__dirname+'/db/carts.json')){
-            fs.writeFileSync(__dirname+'/db/carts.json',JSON.stringify(carts))
-        }
-        res.status(200).json(cart)
     }
     
     else{
@@ -64,12 +78,36 @@ router.post('/:cid/product/:pid',(req,res)=>{
     }
 })
 
-router.delete('/',(req,res)=>{
-    carts = [];
-    if (fs.existsSync(__dirname+'/db/carts.json')){
-        fs.writeFileSync(__dirname+'/db/carts.json',JSON.stringify(carts))
-    }
+router.put("/:cid/product/:pid", async (req,res)=>{
+    const actualizarQuantity = await cartModel.updateOne(
+        {_id: new ObjectId(req.params.cid), "products.id": req.params.pid},
+        {$set: {"products.$.quantity": req.body.quantity}}
+    )
+    let cart = await cartModel.findOne({ _id: new ObjectId(req.params.cid) });
+    res.status(200).json(cart)
+})
+
+router.delete('/',async (req,res)=>{
+    const eliminarCarts = await cartModel.deleteMany({});
+    await getCarts();
     res.status(200).json(carts)
 })
+
+router.delete('/:cid',async (req,res)=>{
+    const eliminarCart = await cartModel.deleteOne({_id: new ObjectId(req.params.cid)})
+    await getCarts();
+    res.status(200).json(carts)
+})
+
+router.delete("/:cid/product/:pid", async (req,res)=>{
+    const eliminarProd = await cartModel.updateOne(
+        {_id: new ObjectId(req.params.cid)},
+        {$pull: {products: {id: req.params.pid}}}
+    )
+    let cart = await cartModel.findOne({ _id: new ObjectId(req.params.cid) });
+    res.status(200).json(cart)
+})
+
+
 
 export default router

@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="/css/{{style}}">
+<div class="wrapper">
+    {{#if result}}
+        <div id="products">
+            <div class="product" id="{{result._id}}">
+                <h6>id: {{result._id}}</h6>
+                <h3>{{result.name}}</h3>
+                <h6>categoria: {{result.categ}}</h6>
+                <p>{{result.desc}}</p>
+                <span>${{result.price}}.00  stock disponible: {{result.stock}}u</span>
+                <br>
+            </div>
+            <div id="addForm">
+                <form action="" method="post" id="addCartForm">
+                <h4>Añadir al carrito</h4>
+                    <label for="post-id">id:</label>
+                        <input type="text" name="id" id="post-id" readonly value={{result._id}}>
+                    <label for="post-quantity">Cantidad:</label>
+                        <input id="post-quantity" type="number" name="quantity" required>
+                    <button type="submit">Subir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{{else}}
+    <h3>Producto no encontrado.</h3>
+{{/if}}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module" src="/socket.io/socket.io.js"></script>
+<script type="module" src="/js/addToCart.js"></script>

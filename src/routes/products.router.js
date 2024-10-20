@@ -1,63 +1,51 @@
 import { Router } from "express";
 import __dirname from "../utils.js";
-import fs from 'fs'
+import { ObjectId } from "mongodb";
+import productModel from '../models/product.model.js';
 
 const router = Router();
 
-let products = [];
-
-if (fs.existsSync(__dirname+'/db/products.json')){
- products = JSON.parse(fs.readFileSync(__dirname+'/db/products.json',"utf8"))
-}
-
-router.get('/', (req,res)=>{
+router.get('/', async (req,res)=>{
+    let products = await productModel.find()    
     res.json(products)
 })
 
-router.get('/:pid', (req,res)=>{
-    const product = products.find(el => el.id == req.params.pid)
+router.get('/:pid', async(req,res)=>{
+    let product = await productModel.findOne({_id: new ObjectId(req.params.pid)})
     if(!product){
         res.status(404).send('Producto no encontrado')
     }
     res.json(product)
 })
 
-router.put('/:pid', (req,res)=>{
-    const product = products.findIndex(el => el.id == req.params.pid)
-    const updateProduct = req.body;
+router.put('/:pid', async (req,res)=>{
+    let product = await productModel.findOne({_id: new ObjectId(req.params.pid)})
 
-    if(product==-1){
+    if(!product){
         res.status(404).send('Producto no encontrado')
     }
     else{
-        products[product] = {...products[product], ...updateProduct}
-        if (fs.existsSync(__dirname+'/db/products.json')){
-            fs.writeFileSync(__dirname+'/db/products.json',JSON.stringify(products))
-        }
-        res.status(200).json(products[product])
+        let updateProduct = await productModel.updateOne(product, req.body)
+        product = await productModel.findOne({_id: new ObjectId(req.params.pid)})
+        res.status(200).json(product)
     }
 })
 
-router.post('/', (req,res)=>{
-    let newProduct = {}
-    newProduct.id = products.length
-    newProduct = {...newProduct, ...req.body}
-    products.push(newProduct);
-    if (fs.existsSync(__dirname+'/db/products.json')){
-        fs.writeFileSync(__dirname+'/db/products.json',JSON.stringify(products))
-    }
+router.post('/', async(req,res)=>{
+    let newProduct = await productModel.create(req.body)
     res.status(201).json(newProduct);
 })
 
-router.delete('/:pid', (req,res)=>{
-    const productDelete = products.find(el => el.id == req.params.pid);
-    if (productDelete){
-        products = products.filter(el => el.id != productDelete.id);
-        if (fs.existsSync(__dirname+'/db/products.json')){
-            fs.writeFileSync(__dirname+'/db/products.json',JSON.stringify(products))
+router.delete('/:pid', async (req,res)=>{
+    if (req.params.pid.length == 24){
+        let prodToDelete = await productModel.findOne({_id: new ObjectId(req.params.pid)});
+        if (prodToDelete){
+            let prodDelete = await productModel.deleteOne({_id: new ObjectId(req.params.pid)})
+            res.status(200).json(prodToDelete);
         }
-        res.status(200).json(productDelete);
-        res.send(products)
+        else{
+            res.status(404).send('Producto no encontrado')
+        }
     }
     else{
         res.status(404).send('Producto no encontrado')
