@@ -1,40 +1,44 @@
 <div class="wrapper">
     <h2>Productos en tiempo real:</h2>
-    <div class="productsFormsWrapper">
-    <form action="" method="post" id="productForm">
-        <h4>Añadir producto</h4>
-        <div class="formField">
-        <label for="post-name">nombre:</label>
-            <input id="post-name" type="text" name="name" required>
-        </div>
-        <div class="formField">
-        <label for="post-categ">category:</label>
-            <input id="post-categ" type="text" name="categ" required>
-        </div>
-        <div class="formField">
-        <label for="post-desc">descripcion:</label>
-            <input id="post-desc" type="text" name="desc" required>
-        </div>          
-        <div class="formField">
-        <label for="post-price">precio:</label>
-            <input id="post-price" type="number" name="price" required>
-        </div>
-        <div class="formField">    
-        <label for="post-stock">stock:</label>
-            <input id="post-stock" type="number" name="stock" required>
-        </div>
-        <button type="submit">Subir</button>
-    </form>
+    {{#if admin}}
+        <div class="productsFormsWrapper">
+            <form action="" method="post" id="productForm">
+                <h4>Añadir producto</h4>
+                <div class="formField">
+                <label for="post-name">nombre:</label>
+                    <input id="post-name" type="text" name="name" required>
+                </div>
+                <div class="formField">
+                <label for="post-categ">category:</label>
+                    <input id="post-categ" type="text" name="categ" required>
+                </div>
+                <div class="formField">
+                <label for="post-desc">descripcion:</label>
+                    <input id="post-desc" type="text" name="desc" required>
+                </div>          
+                <div class="formField">
+                <label for="post-price">precio:</label>
+                    <input id="post-price" type="number" name="price" required>
+                </div>
+                <div class="formField">    
+                <label for="post-stock">stock:</label>
+                    <input id="post-stock" type="number" name="stock" required>
+                </div>
+                <button type="submit">Subir</button>
+            </form>
 
-    <form action="" method="post" id="deleteForm">
-        <h4>Eliminar producto por Id</h4>
-        <div class="formField">
-        <label for="post-id">Id:</label>
-            <input type="text" name="id" id="post-id" required>
+            <form action="" method="post" id="deleteForm">
+                <h4>Eliminar producto por Id</h4>
+                <div class="formField">
+                <label for="post-id">Id:</label>
+                    <input type="text" name="id" id="post-id" required>
+                </div>
+                <button type="submit">Eliminar</button>
+            </form>
         </div>
-        <button type="submit">Eliminar</button>
-    </form>
-</div>
+    {{else}}
+        <h2>Para añadir o quitar productos se requieren permisos de administrador</h2>
+    {{/if}}
 <hr class="prodRowsHr">
 
 <div id="productsWrapper">

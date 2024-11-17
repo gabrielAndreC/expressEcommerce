@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Backend Calvo-Coder</title>
     <link rel="stylesheet" href="css/{{style}}">
 </head>
 <body>
@@ -11,10 +11,15 @@
             <a href="/">Inicio</a>
             <a href="/products">Productos</a>
             <a href="/realTimeProducts">Añadir/Quitar productos</a>
-            <a href="/login">Registro/Inicio de sesión</a>
+            <a href="/account/login">Registro/Inicio de sesión</a>
+            {{#if userLogged}}
+            <a href="/carts/{{cartId}}">Carrito</a>
+            {{/if}}
         </nav>
     </header>
+    {{#if userLogged}}
+    <h4>hola {{userLogged}}</h4>
+    {{/if}}
     {{{body}}}
 </body>
-<script type="module" src="/js/getCart.js"></script>
 </html>

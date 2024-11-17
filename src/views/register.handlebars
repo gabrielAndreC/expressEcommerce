@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="/css/{{style}}">
+
+<div class="signupContainer">
+    <form action="" method="post" id="signForm" class="logForm">
+        <h4>Registrate</h4>
+        <div class="formField">
+        <label for="post-name">Nombre/s</label>
+            <input id="post-name" type="text" name="name" required>
+        </div>
+        <div class="formField">
+        <label for="post-lastName">Apellido/s</label>
+            <input id="post-lastName" type="text" name="lastName" required>
+        </div>
+        <div class="formField">
+        <label for="post-age">Edad</label>
+            <input id="post-age" type="number" max="100" min="0" name="age" required>
+        </div>
+        <div class="formField">
+        <label for="post-email">Email</label>
+            <input id="post-email" type="text" name="email" required>
+        </div>
+        <div class="formField">
+        <label for="post-password">Contraseña</label>
+            <input id="post-password" type="text" name="password" required>
+        </div>
+        <div class="formField">
+        <label for="post-role">Rol</label>
+            <select id="post-role" type="text" name="role">
+                <option value="user">Usuario común</option>
+                <option value="admin">Administrador</option>
+            </select>
+        </div>
+        <button type="submit">Resgistrarse</button>
+    </form>
+</div>

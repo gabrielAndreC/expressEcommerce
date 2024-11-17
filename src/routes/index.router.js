@@ -1,18 +1,27 @@
 import { Router } from "express";
-import __dirname from "../utils.js";
+import __dirname, { createHash, verifyToken } from "../utils.js";
 import productModel from "../models/product.model.js";
+import userModel from "../models/user.model.js";
 import cartModel from "../models/cart.model.js";
 import {ObjectId} from 'mongodb';
+import cookieParser from "cookie-parser";
 
 const router = Router();
+
+router.use((req, res, next) => {
+    const token = verifyToken(req.cookies.token)
+    if (token){
+        res.locals.cartId = token.cart || null;
+        res.locals.userLogged = token.email || null;
+        res.cookie("userRole",token.role,{signed:true});
+    }
+    next();
+});
 
 router.get('/', (req,res)=>{
     res.render("home",{style:"main.css"})
 })
 
-router.get('/login', (req,res)=>{
-    res.render("login",{style:"main.css"})
-})
 
 router.get('/products', async (req,res)=>{
     let page = parseInt(req.query.page);
@@ -43,6 +52,8 @@ router.get('/products/:pid', async (req,res)=>{
 
 router.get('/carts/:cid', async (req,res)=>{
     let cart;
+
+    if(!res.locals.cartId || req.params.cid != res.locals.cartId) return res.redirect("/account/login")
 
     if (req.params.cid.length ==24){
         cart = await cartModel.findOne({_id: new ObjectId(req.params.cid)}).lean()
@@ -87,8 +98,14 @@ router.get('/statusQuery', async (req,res)=>{
 })
 
 router.get('/realtimeproducts', (req,res)=>{
+    const role = req.signedCookies.userRole;
+    let admin = false;
+    if (role){
+        if (role == "admin") {admin = true}
+    }
     res.render("realTimeProducts",{
-        style:'main.css'
+        style:'main.css',
+        admin
     })
 })
 

@@ -13,12 +13,17 @@
             <div id="addForm">
                 <form action="" method="post" id="addCartForm">
                 <h4>Añadir al carrito</h4>
+                        <input type="text" name="cart" id="" style="display: none;" value={{cartId}}>
                     <label for="post-id">id:</label>
                         <input type="text" name="id" id="post-id" readonly value={{result._id}}>
                     <label for="post-quantity">Cantidad:</label>
                         <input id="post-quantity" type="number" name="quantity" required>
+                    {{#if userLogged}}
                     <button type="submit">Subir</button>
-                </form>
+                    {{else}}
+                    <button disabled>Inicia sesion para comprar</button>
+                    {{/if}}
+                </form>   
             </div>
         </div>
     </div>
