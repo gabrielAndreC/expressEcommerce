@@ -2,20 +2,16 @@ import handlebars  from 'express-handlebars';
 import express from 'express';
 import __dirname from './utils.js';
 import mongoose from 'mongoose';
-import { ObjectId } from "mongodb";
 import dotenv from 'dotenv';
 import indexRouter from './routes/index.router.js';
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import accountRouter from './routes/account.router.js';
 import { Server } from "socket.io";
-import productModel from './models/product.model.js';
-import userModel from './models/user.model.js'
-import cartModel from './models/cart.model.js';
 import cookieParser from 'cookie-parser';
 import { iniPassport } from './config/passport.js';
-import passport from 'passport';
 import session from 'express-session';
+import { productService } from './services/product.service.js';
 
 dotenv.config();
 
@@ -61,7 +57,7 @@ io.on('connection',socket=>{
     let products = []
 
     const getProducts = async () =>{
-       products = await productModel.find()
+       products = await productService.getAll()
        socket.emit('enviarProductList',products)
     }
 
@@ -73,48 +69,18 @@ io.on('connection',socket=>{
     //añadir el nuevo objeto y actualizar la lista
     socket.on("añadiendoProducto", async (data) =>{
 
-        let insert = await productModel.create(data)
+        let insert = await productService.create(data)
         await getProducts();
     })
 
     //eliminar producto por id
     socket.on('eliminarProducto', async (data)=>{
         try {
-            let deleteProduct = await productModel.deleteOne({_id: new ObjectId(String(data).trim())});
+            let deleteProduct = await productService.deleteOne(String(data).trim());
          } catch (err) {
             console.error(err);
          }
         getProducts();
         socket.emit('enviarProductList',products)
-    })
-    //Añadir producto a un carrito y crear uno si no 
-    socket.on('añadiendoAlCarrito',async(data)=>{
-
-        const prodId = data.id;
-        const cartId = data.cart;
-        const quantity = data.quantity;
-        
-        //muestra notificacion de loading
-        if (cartId){
-            let cart = await cartModel.findOne({_id: new ObjectId(String(cartId))})
-                //decide si hay que agregar un nuevo producto al carrito o sumar una cantidad a las unidades existentes
-            if (cart){
-                let productExist = await cartModel.findOne({_id: new ObjectId(String(cartId)), "products.product":prodId})
-                
-                if (productExist){
-                    const updateCart = await cartModel.updateOne(
-                        {_id: new ObjectId(String(cartId)), "products.product": prodId},
-                        {$inc: { "products.$.quantity": quantity} }
-                    )
-                    await cart.save();
-                    socket.emit('alert',"Unidad/es añadida/s",cartId)
-                }
-                else{
-                    cart.products.push({"product": new ObjectId(String(prodId)),"quantity":quantity})
-                    await cart.save();
-                    socket.emit('alert',"Producto añadido",cartId)
-                }
-            }
-        }
     })
 })

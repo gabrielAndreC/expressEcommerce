@@ -1,8 +1,8 @@
 const socket = io();
 const addCartForm = document.getElementById("addCartForm");
-
+/*
 addCartForm.addEventListener('submit', (ev)=>{
-    ev.preventDefault();
+    //ev.preventDefault();
 
     const formData = new FormData(ev.target)
     const nuevoProducto = {};
@@ -36,4 +36,4 @@ socket.on("alert", (data,cartId)=>{
         window.location.href = `http://localhost:8080/carts/${cartId}`
       })
     
-})
+})*/

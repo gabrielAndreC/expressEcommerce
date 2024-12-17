@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="/css/{{style}}">
 <div class="wrapper">
     {{#if result}}
@@ -31,6 +32,12 @@
     <h3>Producto no encontrado.</h3>
 {{/if}}
 </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const mensaje = {{{alerta}}}
+    if (mensaje) {
+      Swal.fire(mensaje);
+    }
+</script>
+
 <script type="module" src="/socket.io/socket.io.js"></script>
 <script type="module" src="/js/addToCart.js"></script>

@@ -1,9 +1,9 @@
 import passport from "passport";
 import local from 'passport-local';
 import google from 'passport-google-oauth20'
-import userModel from "../models/user.model.js";
-import cartModel from "../models/cart.model.js";
 import { createHash } from "../utils.js";
+import { cartService } from "../services/carts.service.js";
+import { userService } from "../services/user.service.js";
 
 const LocalStrategy = local.Strategy;
 const GoogleStrategy = google.Strategy;
@@ -18,11 +18,11 @@ export const iniPassport = ()=>{
         try {
             const {name, lastName, age, role, cart} = req.body;
 
-            const user = await userModel.findOne({email: username }).populate("cart");
+            const user = await userService.findOnePopulate({email: username }, "cart");
 
             if (user) return done(null, false, {message: "el usuario ya existe"}); //no error null, no usuario false,
             
-            const nuevoCart = await cartModel.create({"products": []});
+            const nuevoCart = await cartService.create({"products": []});
 
             const nuevoUser = {
                 name,
@@ -34,7 +34,7 @@ export const iniPassport = ()=>{
                 password: createHash(password)
             }
 
-            const crearUser = await userModel.create(nuevoUser);
+            const crearUser = await userService.create(nuevoUser);
 
             return done(null, crearUser,)
 
@@ -50,7 +50,7 @@ export const iniPassport = ()=>{
 
     passport.deserializeUser(async (id,done)=>{
         try {
-            const user = await userModel.findById(id);
+            const user = await userService.findById(id);
             done(null, user);
 
         } catch (error) {
@@ -78,14 +78,14 @@ export const iniPassport = ()=>{
                 email: emails[0].value
             }
             //busca
-            const userExists = await userModel.findOne({email: user.email});
+            const userExists = await userService.findOne({email: user.email});
             //si existe...
             if (userExists){
                 return cb(null, userExists)
             }
             //si no, lo crea
-                const nuevoCart = await cartModel.create({"products": []});
-                const userCreate = await userModel.create({...user, cart: nuevoCart._id})
+                const nuevoCart = await cartService.create({"products": []});
+                const userCreate = await userService.create({...user, cart: nuevoCart._id})
             return cb(null,userCreate)
         } catch (error) {
             cb(error)
