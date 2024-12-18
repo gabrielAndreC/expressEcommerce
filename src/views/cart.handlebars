@@ -1,3 +1,6 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <link rel="stylesheet" href="/css/{{style}}">
 <div class="wrapper">
     <h1>Carrito</h1>
@@ -11,12 +14,27 @@
                     <h6>categoria: {{this.categ}}</h6>
                     <p>{{this.desc}}</p>
                     <span>${{this.price}}.00 X {{this.quantity}} = ${{this.totalPrice}}</span>
+                    <form action="" method="post">
+                        <input type="text" name="id" id="id" readonly="" style="display: none;" value={{this.id}}>
+                        <label for="quantity">Cantidad:</label>
+                        <input type="number" name="quantity" id="quantity" value={{this.quantity}}>
+                        <button type="submit">Guardar</button>
+                    </form>
                     <hr class="prodHr">
                 </div>
             {{/each}}
         </div>
     </div>
+    <a href="{{cid}}/purchase">
+        <button>Realizar compra</button>
+    </a>
     {{else}}
     <h3>No hay productos aún.</h3>
     {{/if}}
 </div>
+<script>
+    const mensaje = {{{alerta}}}
+    if (mensaje) {
+      Swal.fire(mensaje);
+    }
+</script>

@@ -1,5 +1,7 @@
 import cartModel from "../cart.model.js";
 import { ObjectId } from "mongodb";
+import ticketModel from "../ticket.model.js";
+import { productDao } from "./product.dao.js";
 
 class CartDao{
     async getAll(){
@@ -33,10 +35,12 @@ class CartDao{
     }
 
     async updateOne(id,prodId,update){
+        
         const updated = await cartModel.updateOne(
-            {_id: new ObjectId(id), "products.product": prodId},
+            {_id: new ObjectId(id), "products.product": new ObjectId(prodId)},
             update
         );
+
         return updated
     }
 
@@ -56,6 +60,44 @@ class CartDao{
             {$pull: {products: {id: pid}}}
         )
         return eliminarProd
+    }
+
+    async clean(cid){
+        const cleaned = await cartModel.updateOne(
+            {_id: new ObjectId(cid)},
+            {products: []}
+        );
+        return cleaned
+    }
+
+    async createTicket(req, user, products){
+
+        let totalPrice = 0;
+
+        let productList = [];
+        
+        for (const el of products) {
+            const productInDb = await productDao.findById(el.product)
+
+            totalPrice += el.quantity * productInDb.price
+
+            productList.push({
+                productId: productInDb._id,
+                product: productInDb.name,
+                quantity: el.quantity, 
+                price: productInDb.price
+            })   
+        }
+
+        const ticket = await ticketModel.create({
+            purchaser: user.email,
+            adress: req.body.adress,
+            fullName: user.full_name,
+            totalPrice: totalPrice,
+            products: productList
+        })
+
+        return ticket
     }
 }
 

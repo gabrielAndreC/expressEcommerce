@@ -1,3 +1,4 @@
+import { UserResponseDto } from "../../dto/user.dto.js";
 import userModel from "../user.model.js";
 import { ObjectId } from "mongodb";
 
@@ -24,6 +25,12 @@ class UserDao{
 
     async create(data){
         const user = await userModel.create(data)
+        return user
+    }
+
+    async createDTO(filter){
+        const dbUser = await userModel.findOne(filter).lean();
+        const user = new UserResponseDto(dbUser)
         return user
     }
 }

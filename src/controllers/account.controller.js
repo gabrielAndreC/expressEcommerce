@@ -61,7 +61,7 @@ export class AccountController{
         const token = req.cookies.token;
 
         const validToken = verifyToken(token);
-        console.log(validToken)
+        
         if (!validToken) return res.status(401).json({status:"error", msg: "Token no valido/vencido"})
         
         res.status(200).json({status:"success", payload: token})

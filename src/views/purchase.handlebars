@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="/css/{{style}}">
+<div class="wrapper">
+    <h1>Carrito</h1>
+{{#if result}}
+    <div id="productsWrapper">
+        <div id="productsCart">
+            {{#each result}}
+                <div class="product">
+                    <p>{{this.name}} - ${{this.quantity}},00 X {{this.price}}Unidades = ${{this.totalPrice}},00</p>
+                    <hr class="prodHr">
+                </div>
+            {{/each}}
+            <h2>Total: <p>${{totalCart}},00</p></h2>
+        </div>
+    </div>
+    <div>
+        <form action="" method="post">
+            <h4>Completar datos de entrega</h4>
+            <label for="post-adress">Direccion del envío</label>
+                <input id="post-adress" type="text" name="adress" required>
+            </div>
+            <button type="submit">Finalizar Compra</button>
+        </form>
+    </div>
+    {{else}}
+    <h3>No hay productos aún.</h3>
+    {{/if}}
+</div>

@@ -34,6 +34,13 @@ export class IndexController {
     }
 
     async getCart(req,res){
+        
+        let alerta;
+
+        if (req.session.alerta){
+            alerta = req.session.alerta;
+            delete req.session.alerta;
+        }
 
         let cart;
 
@@ -58,10 +65,41 @@ export class IndexController {
                 totalPrice: item.product.price * item.quantity
             }));
 
-            res.render("cart", { result: products, style: "main.css" });
+            res.render("cart", {cid: res.locals.cartId, alerta: JSON.stringify(alerta), result: products, style: "main.css" });
         }
         else{
             res.status(404).send("El carrito no existe.")
+        }
+    }
+
+    async updateCart(req,res){
+
+        const update = await cartService.updateOne(req.params.cid, req.body.id,
+            {
+                $set: { "products.$.quantity": parseInt(req.body.quantity)}
+            }
+        )
+
+        let cart;
+        if (req.params.cid.length ==24){
+            cart = await cartService.findOneLean(req.params.cid)
+        }
+
+        if (cart) {
+            const populatedCart = await cartService.populate(cart, { path: 'products.product' });
+
+            // Simplificando la estructura, no pude pasar directamente populatedCart al handlebar
+            const products = populatedCart.products.map(item => ({
+                //el metodo spread no funcionó (...item, quantity:item.quantity)
+                id: item.product._id,
+                name: item.product.name,
+                categ: item.product.categ,
+                desc: item.product.desc,
+                price: item.product.price,
+                quantity: item.quantity,
+                totalPrice: item.product.price * item.quantity
+            }));
+            res.render("cart", {cid: res.locals.cartId, result: products, style: "main.css" });
         }
     }
 
@@ -141,5 +179,59 @@ export class IndexController {
             style:'main.css',
             admin
         })
+    }
+
+    async purchaseView(req,res){
+        let cart;
+
+        if (req.params.cid.length ==24){
+            cart = await cartService.findOneLean(req.params.cid)
+        }
+
+        if (cart) {
+            const populatedCart = await cartService.populate(cart, { path: 'products.product' });
+
+            // Simplificando la estructura, no pude pasar directamente populatedCart al handlebar
+            const products = populatedCart.products.map(item => ({
+                //el metodo spread no funcionó (...item, quantity:item.quantity)
+                name: item.product.name,
+                price: item.product.price,
+                quantity: item.quantity,
+                totalPrice: item.product.price * item.quantity
+            }));
+
+            let totalCart = 0; 
+
+            products.forEach( (el) => {
+                totalCart += (el.price*el.quantity)
+            });
+
+            res.render("purchase", {totalCart, result: products, style: "main.css" });
+        }
+    }
+
+    async purchaseProcess(req,res){
+        
+        const status = await cartService.purchaseProcess(req, res, req.params.cid);
+        if (status.status == "cancel"){
+            let products = ""
+            
+            status.products.forEach((el)=>{
+                products += `${el.name} stock: ${el.currentStock}<br>`
+            })
+            
+            const alerta = {
+                title: "Uno o mas productos no tienen stock suficiente",
+                html: `${products}`,
+                icon: "error"
+              };
+            
+            req.session.alerta = alerta
+            res.redirect(`/carts/${req.params.cid}`)
+        }
+
+        if (status.status == "done"){
+            res.status(201).json(status.ticket)
+        }
     }
 }

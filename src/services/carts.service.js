@@ -1,5 +1,8 @@
 import { cartDao } from "../models/dao/cart.dao.js";
 import { ObjectId } from "mongodb";
+import { productDao } from "../models/dao/product.dao.js";
+import { userDao } from "../models/dao/user.dao.js";
+import { UserResponseDto } from "../dto/user.dto.js";
 
 class CartService{
     async getAll(){
@@ -43,6 +46,43 @@ class CartService{
         await cart.save();
         const updatecart = await cartDao.findOne(cid);
         return updatecart;
+    }
+
+    async purchaseProcess(req, res, cid){
+
+        const user = await userDao.createDTO({cart: new ObjectId(cid)})
+        
+        const productsInCart = await cartDao.findOneLean(cid)
+
+        let notAvailable = [];
+
+        for (const el of productsInCart.products) {
+            const productInDb = await productDao.findById(el.product);
+    
+            if (productInDb) {
+                if (el.quantity > productInDb.stock) {
+                    notAvailable.push({ ...el, currentStock: productInDb.stock, name: productInDb.name });
+                }
+                else{
+                    const productSub = await productDao.updateOne(productInDb,
+                        {stock: (productInDb.stock - el.quantity)}
+                    )
+                }
+            }
+        }
+    
+        if (notAvailable.length > 0) {
+            const status = { status: "cancel", products: notAvailable };
+            return status;
+        }
+
+        const ticket = await cartDao.createTicket(req, user, productsInCart.products)
+        
+        const cart = cartDao.clean(cid)
+
+        const status = {status: "done", ticket}
+
+        return status
     }
 
     async deleteMany(){

@@ -1,6 +1,6 @@
 import { request, response } from "express";
 
-export const isAdmin = (role) =>{
+export const authenticateMw = (role) =>{
     return async (req = request, res = response, next) => {
 
         if(!req.cookies.token) return res.status(401).json({status: "error", msg: "Unauthorized"});

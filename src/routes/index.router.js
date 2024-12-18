@@ -1,7 +1,7 @@
 import { Router } from "express";
 import __dirname, {verifyToken} from "../utils.js";
 import { IndexController } from "../controllers/index.controller.js";
-import { isAdmin } from "../middlewares/isAdmin.middleware.js";
+import { authenticateMw  } from "../middlewares/authenticate.middleware.js";
 import { CartsController } from "../controllers/carts.controller.js";
 
 const router = Router();
@@ -29,12 +29,18 @@ router.get('/products', indexController.getProducts)
 
 router.get('/products/:pid', indexController.getProductById)
 
-router.post('/products/:pid', isAdmin("user") ,indexController.addToCart)
+router.post('/products/:pid', authenticateMw("user") ,indexController.addToCart)
 
 router.get('/carts/:cid', indexController.getCart)
 
+router.post('/carts/:cid', indexController.updateCart)
+
+router.get('/carts/:cid/purchase', indexController.purchaseView)
+
+router.post('/carts/:cid/purchase', indexController.purchaseProcess)
+
 router.get('/statusQuery', indexController.getStatusQuery)
 
-router.get('/realtimeproducts', isAdmin("admin"), indexController.getRealTimeProducts)
+router.get('/realtimeproducts', authenticateMw("admin"), indexController.getRealTimeProducts)
 
 export default router

@@ -4,6 +4,13 @@ import google from 'passport-google-oauth20'
 import { createHash } from "../utils.js";
 import { cartService } from "../services/carts.service.js";
 import { userService } from "../services/user.service.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const clientID = process.env.CLIENTID
+const clientSecret = process.env.CLIENTSECRET
+const callbackURL = process.env.CALLBACKURL
 
 const LocalStrategy = local.Strategy;
 const GoogleStrategy = google.Strategy;
@@ -59,9 +66,9 @@ export const iniPassport = ()=>{
     })
 
     passport.use(new GoogleStrategy({
-        clientID: "669237819697-1frpfbkkveqmkq2c2ik7qij8e2mlkkp8.apps.googleusercontent.com",
-        clientSecret: "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",
-        callbackURL: "http://localhost:8080/account/google"
+        clientID: clientID,
+        clientSecret: clientSecret,
+        callbackURL: callbackURL
       },
       async (accessToken, refreshToken, profile, cb) => {
         /*
